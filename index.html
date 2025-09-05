@@ -240,4 +240,79 @@
         </div>
   
         
-         
+          <aside class="lg:col-span-1 h-full">
+          <div class="bg-white p-6 md:p-6 rounded-xl shadow-lg h-full flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg md:text-lg font-semibold flex items-center gap-2">
+                <i class="fa-regular fa-clock text-lg md:text-xl font-medium"></i> Call History
+              </h3>
+              <button id="clear-history" class="bg-[#00A63E] hover:bg-green-800 text-white px-4 md:px-6 py-2 rounded-full text-sm md:text-base">
+                Clear
+              </button>
+            </div>
+            <ul id="history-list" class="space-y-3 flex-1 overflow-y-auto pr-1"></ul>
+          </div>
+        </aside>
+
+
+<!-- Javascript part -->
+    <script>
+
+      
+        let loveCount = 0,
+        coinCount = 100,
+        copyCount = 0;
+
+  const loveSpan   = document.getElementById("love-count");
+  const coinSpan   = document.getElementById("coinCount");
+  const copySpan   = document.getElementById("copy-count");
+  const historyList = document.getElementById("history-list");
+  const clearBtn    = document.getElementById("clear-history");
+
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".heart")) {
+      loveSpan.textContent = ++loveCount;
+    }
+
+    //Copy
+    if (e.target.closest(".copy-btn")) {
+      const card   = e.target.closest(".card");
+      const number = card.querySelector(".number").textContent;
+      copySpan.textContent = ++copyCount;
+      navigator.clipboard.writeText(number).then(() =>
+        alert(`Copied: ${number}`)
+      );
+    }
+
+    // Call
+    if (e.target.closest(".call-btn")) {
+      if (coinCount < 20) return alert("Not enough coins!");
+      const card    = e.target.closest(".card");
+      const service = card.querySelector("h2").textContent;
+      const number  = card.querySelector(".number").textContent;
+
+      coinCount -= 20;
+      coinSpan.textContent = coinCount;
+      alert(`☎ Calling ${service} ${number}...`);
+
+      // Add in call history
+      const li = document.createElement("li");
+      li.className =
+        "bg-[#FAFAFA] p-3 rounded-xl flex justify-between items-center shadow-sm";
+      li.innerHTML = `
+        <div>
+          <h4 class="font-semibold text-[#111111]">${service}</h4>
+          <p class="text-sm text-[#5C5C5C]">${number}</p>
+        </div>
+        <span class="text-sm text-[#111111]">${new Date().toLocaleTimeString()}</span>
+      `;
+      historyList.appendChild(li);
+    }
+  });
+
+  //  Clear
+  clearBtn.addEventListener("click", () => (historyList.innerHTML = ""));
+</script>
+
+</body>
+</html>
